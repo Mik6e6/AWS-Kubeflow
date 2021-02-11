@@ -1,6 +1,8 @@
 # AWS-Kubeflow
 
 
+![](https://raw.githubusercontent.com/kubeflow/kfserving/51f4f8c0131bc687b8299446e8efe11aade7f903/docs/diagrams/kfserving.png)
+
 
 ### Cluster Setup:
 
