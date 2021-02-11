@@ -169,7 +169,7 @@ eksctl create iamserviceaccount
        --approve
        
 curl -sS "https://raw.githubusercontent.com/kubernetes-sigs/aws-alb-ingress-controller/v1.1.4/docs/examples/alb-ingress-controller.yaml" \
-     | sed "s/# - --cluster-name=devCluster/- --cluster-name=attractive-gopher/g" \
+     | sed "s/# - --cluster-name=devCluster/- --cluster-name=AWS_CLUSTER_NAME/g" \
      | kubectl apply -f -
      
      
