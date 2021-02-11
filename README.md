@@ -273,3 +273,102 @@ We can use the default creds in kfctl_aws.yaml
 
 admin@kubeflow.org
 12341234
+
+11. Kf Serving
+
+```
+
+mkdir app
+cd app
+
+```
+
+Create flask app app.py
+
+```
+
+import os
+
+from flask import Flask
+
+app = Flask(__name__)
+
+@app.route('/')
+def predict():
+   return 'Hello {}!\n'.format(target)
+
+if __name__ == "__main__":
+   app.run(debug=True,host='0.0.0.0',port=8080)
+   
+```
+
+
+Creating the Dockerfile
+
+```
+
+
+FROM python:3.7-slim
+
+# Allow statements and log messages to immediately appear in the Knative logs
+ENV PYTHONUNBUFFERED True
+
+# Copy local code to the container image.
+ENV APP_HOME /app
+WORKDIR $APP_HOME
+COPY . ./
+
+# Install production dependencies.
+RUN pip install Flask gunicorn
+
+# Run the web service on container startup. Here we use the gunicorn
+# webserver, with one worker process and 8 threads.
+# For environments with multiple CPU cores, increase the number of workers
+# to be equal to the cores available.
+CMD exec gunicorn --bind :$PORT --workers 1 --threads 8 --timeout 0 app:app
+
+```
+
+Creating service.yaml
+
+```
+apiVersion: serving.knative.dev/v1
+kind: Service
+metadata:
+  name: helloworld-python
+  namespace: default
+spec:
+  template:
+    spec:
+      containers:
+        - image: docker.io/{username}/hello-wolrd-predict
+          env:
+            - name: TARGET
+              value: "Python Sample v1"
+```
+
+
+```
+
+# Build the container 
+docker build -t {username}/hello-wolrd-predict .
+
+# Push the container to docker registry
+docker push {username}/hello-wolrd-predict
+
+
+kubectl apply --filename service.yaml
+
+kubectl get ksvc hello-wolrd-predict  --output=custom-columns=NAME:.metadata.name,URL:.status.url
+
+
+```
+
+
+Temporary DNS configuration
+
+```
+
+curl -H "Host: http://hello-wolrd-predict.default.example.com" ip:port
+
+```
