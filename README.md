@@ -55,11 +55,18 @@ Cluster control:
 
 1. List all node groups in the cluster
 
+```
 eksctl get nodegroup --cluster={CLUSTER_NAME}
+
+```
 
 2. Deleting a node group
 
+```
+
 eksctl delete nodegroup --cluster={CLUSTER_NAME} --name={nodegroupName}
+
+```
 
 Note: instance types cannot be changed in the node group.
 
